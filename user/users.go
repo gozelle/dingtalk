@@ -7,47 +7,81 @@ import (
 	"github.com/gozelle/dingtalk"
 )
 
-type IUser interface {
-	GetUserOrNil(id string) (user *dingtalk.DepartmentUser, err error)
+type IManger interface {
+	GetUser(id string) (user *dingtalk.DepartmentUser, err error)
+	Users() (users []*dingtalk.DepartmentUser, err error)
 }
 
-func NewUsers(api *dingtalk.Client) *Users {
-	return &Users{api: api}
+func NewUserManger(api *dingtalk.Client) *Manager {
+	return &Manager{api: api}
 }
 
-var _ IUser = (*Users)(nil)
+var _ IManger = (*Manager)(nil)
 
-type Users struct {
+type Manager struct {
 	lock    sync.Mutex
 	api     *dingtalk.Client
-	users   []*dingtalk.DepartmentUser
 	mapping map[string]*dingtalk.DepartmentUser
 }
 
-func (s *Users) GetUserOrNil(id string) (user *dingtalk.DepartmentUser, err error) {
+func (s *Manager) GetUser(id string) (user *dingtalk.DepartmentUser, err error) {
 
 	s.lock.Lock()
 	defer func() {
 		s.lock.Unlock()
 	}()
 
-	if s.mapping == nil {
-		s.users, err = s.getUserIds()
-		if err != nil {
-			return
-		}
-		s.mapping = map[string]*dingtalk.DepartmentUser{}
-		for _, v := range s.users {
-			s.mapping[v.UserID] = v
-		}
+	err = s.initUsers()
+	if err != nil {
+		return
 	}
-
-	user = s.mapping[id]
+	var ok bool
+	user, ok = s.mapping[id]
+	if !ok {
+		err = fmt.Errorf("user not found")
+		return
+	}
 
 	return
 }
 
-func (s *Users) listAllSub(params *dingtalk.DepartmentListSubParams) (r []*dingtalk.Department, err error) {
+func (s *Manager) initUsers() (err error) {
+	if s.mapping != nil {
+		return
+	}
+
+	users, err := s.getUserIds()
+	if err != nil {
+		return
+	}
+	s.mapping = map[string]*dingtalk.DepartmentUser{}
+	for _, v := range users {
+		s.mapping[v.UserID] = v
+	}
+
+	return
+}
+
+func (s *Manager) Users() (users []*dingtalk.DepartmentUser, err error) {
+
+	s.lock.Lock()
+	defer func() {
+		s.lock.Unlock()
+	}()
+
+	err = s.initUsers()
+	if err != nil {
+		return
+	}
+
+	for _, v := range s.mapping {
+		users = append(users, v)
+	}
+
+	return
+}
+
+func (s *Manager) listAllSub(params *dingtalk.DepartmentListSubParams) (r []*dingtalk.Department, err error) {
 	list, err := s.api.DepartmentClient().ListSub(params)
 	if err != nil {
 		return
@@ -68,7 +102,7 @@ func (s *Users) listAllSub(params *dingtalk.DepartmentListSubParams) (r []*dingt
 	return
 }
 
-func (s *Users) getUserIds() (users []*dingtalk.DepartmentUser, err error) {
+func (s *Manager) getUserIds() (users []*dingtalk.DepartmentUser, err error) {
 	subs, err := s.listAllSub(nil)
 	if err != nil {
 		err = fmt.Errorf("查询部门列表错误: %s", err)

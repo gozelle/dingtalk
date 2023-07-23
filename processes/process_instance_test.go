@@ -1,4 +1,4 @@
-package process
+package processes
 
 import (
 	"sort"
@@ -17,14 +17,14 @@ func TestParseJson(t *testing.T) {
 	item := new(Instance)
 	client := test.NewTestClient()
 
-	um := user.NewUsers(client)
+	um := user.NewUserManger(client)
 
 	for _, v := range item.Tasks {
 		if v.TaskStatus != "COMPLETED" {
 			continue
 		}
 		var u *dingtalk.DepartmentUser
-		u, err = um.GetUserOrNil(v.Userid)
+		u, err = um.GetUser(v.Userid)
 		require.NoError(t, err)
 		v.Username = u.Name
 
@@ -40,7 +40,7 @@ func TestParseJson(t *testing.T) {
 
 	for _, v := range item.OperationRecords {
 		var u *dingtalk.DepartmentUser
-		u, err = um.GetUserOrNil(v.Userid)
+		u, err = um.GetUser(v.Userid)
 		require.NoError(t, err)
 		v.Username = u.Name
 	}
