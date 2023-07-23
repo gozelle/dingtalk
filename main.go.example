@@ -1,0 +1,38 @@
+package main
+
+import (
+	"fmt"
+	openapi "github.com/alibabacloud-go/darabonba-openapi/client"
+	dingtalkoauth2_1_0 "github.com/alibabacloud-go/dingtalk/oauth2_1_0"
+	"github.com/alibabacloud-go/tea/tea"
+)
+
+func CreateClient() (_result *dingtalkoauth2_1_0.Client, _err error) {
+	config := &openapi.Config{}
+	config.Protocol = tea.String("https")
+	config.RegionId = tea.String("central")
+	_result = &dingtalkoauth2_1_0.Client{}
+	_result, _err = dingtalkoauth2_1_0.NewClient(config)
+	return _result, _err
+}
+
+func main() {
+	
+	client, err := CreateClient()
+	if err != nil {
+		fmt.Println("new client error:", err)
+		return
+	}
+	
+	request := &dingtalkoauth2_1_0.GetAccessTokenRequest{
+		AppKey:    tea.String("dingygcwu8afcazm21t9"),
+		AppSecret: tea.String("WkDkjZL1_ihlf4ADCAw1AoLcXq07fgSKWW6nJVUDfWsD38GpXcbyuGv7AQfFS7pW"),
+	}
+	
+	resp, err := client.GetAccessToken(request)
+	if err != nil {
+		fmt.Println("request error:", err)
+		return
+	}
+	fmt.Println(resp.String())
+}
