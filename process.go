@@ -15,7 +15,7 @@ type InstanceIdsRequest struct {
 	StartTime   int64   `json:"start_time"` // 毫秒
 	EndTime     int64   `json:"end_time"`   // 毫秒
 	Size        int     `json:"size"`
-	Cursor      int64   `json:"cursor"`
+	Cursor      *int64  `json:"cursor"`
 	UseridList  *string `json:"userid_list"`
 }
 

@@ -5,11 +5,12 @@ import (
 	"testing"
 
 	"github.com/gozelle/dingtalk"
+	"github.com/gozelle/dingtalk/test"
 	"github.com/stretchr/testify/require"
 )
 
 func TestUserClient(t *testing.T) {
-	client := NewTestClient()
+	client := test.NewTestClient()
 	list, err := client.UserClient().ListIDs(1)
 	require.NoError(t, err)
 	d, err := json.MarshalIndent(list, "", "\t")

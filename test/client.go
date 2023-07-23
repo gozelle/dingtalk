@@ -1,4 +1,4 @@
-package dingtalk_test
+package test
 
 import "github.com/gozelle/dingtalk"
 

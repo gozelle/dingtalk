@@ -7,9 +7,11 @@ require (
 	github.com/alibabacloud-go/dingtalk v1.5.80
 	github.com/alibabacloud-go/tea v1.2.1
 	github.com/golang-module/carbon/v2 v2.2.3
+	github.com/gozelle/fs v0.0.0-20230530020145-b0ce934d6289
 	github.com/gozelle/pointer v0.0.0-20230124152942-5286d508f8ab
 	github.com/gozelle/resty v0.0.0-20230420051036-2811f33ec45c
 	github.com/gozelle/spew v1.1.17
+	github.com/gozelle/testify v1.8.11
 	github.com/lib/pq v1.10.9
 	github.com/shopspring/decimal v1.3.1
 	github.com/stretchr/testify v1.8.1
@@ -28,6 +30,9 @@ require (
 	github.com/clbanning/mxj/v2 v2.5.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/gozelle/color v1.14.1 // indirect
+	github.com/gozelle/go-difflib v1.0.0 // indirect
+	github.com/gozelle/go-spew v1.1.10 // indirect
+	github.com/gozelle/yaml v0.0.0-20221214152138-81b78a92d903 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.17 // indirect

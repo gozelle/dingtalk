@@ -8,13 +8,14 @@ import (
 	"testing"
 
 	"github.com/gozelle/dingtalk"
+	"github.com/gozelle/dingtalk/test"
 	"github.com/stretchr/testify/require"
 )
 
 func TestDepartment(t *testing.T) {
 
 	// 测试
-	client := NewTestClient()
+	client := test.NewTestClient()
 
 	subs, err := ListAllSub(client, nil)
 	require.NoError(t, err)
