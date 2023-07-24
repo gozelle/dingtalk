@@ -2,7 +2,7 @@ package dingtalk
 
 import (
 	"encoding/json"
-
+	
 	"github.com/tidwall/gjson"
 )
 
@@ -27,15 +27,15 @@ type InstanceIdsReply struct {
 // InstanceIds 查询审批流实例列表
 // https://open.dingtalk.com/document/orgapp-server/operation-to-retrieve-a-list-of
 func (p *ProcessClient) InstanceIds(params *InstanceIdsRequest) (reply *InstanceIdsReply, err error) {
-
+	
 	req := p.client.newRestyRequest()
 	req.SetBody(params)
-
+	
 	err = p.client.wrapAccessToken(req)
 	if err != nil {
 		return
 	}
-
+	
 	resp, err := req.Post(p.client.url("/topapi/processinstance/listids"))
 	if err != nil {
 		return
@@ -44,13 +44,13 @@ func (p *ProcessClient) InstanceIds(params *InstanceIdsRequest) (reply *Instance
 	if err != nil {
 		return
 	}
-
+	
 	reply = new(InstanceIdsReply)
 	err = json.Unmarshal(data, reply)
 	if err != nil {
 		return
 	}
-
+	
 	return
 }
 
@@ -68,13 +68,8 @@ func (p *ProcessClient) Instance(id string) (reply string, err error) {
 	if err != nil {
 		return
 	}
-
-	data, err := extractResult(resp)
-	if err != nil {
-		return
-	}
-
-	reply = gjson.Parse(string(data)).Get("process_instance").Raw
-
+	
+	reply = gjson.Parse(resp.String()).Get("process_instance").Raw
+	
 	return
 }
