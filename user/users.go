@@ -3,7 +3,7 @@ package users
 import (
 	"fmt"
 	"sync"
-
+	
 	"github.com/gozelle/dingtalk"
 )
 
@@ -25,12 +25,12 @@ type Manager struct {
 }
 
 func (s *Manager) GetUser(id string) (user *dingtalk.DepartmentUser, err error) {
-
+	
 	s.lock.Lock()
 	defer func() {
 		s.lock.Unlock()
 	}()
-
+	
 	err = s.initUsers()
 	if err != nil {
 		return
@@ -38,10 +38,10 @@ func (s *Manager) GetUser(id string) (user *dingtalk.DepartmentUser, err error) 
 	var ok bool
 	user, ok = s.mapping[id]
 	if !ok {
-		err = fmt.Errorf("user not found")
+		user = nil
 		return
 	}
-
+	
 	return
 }
 
@@ -49,7 +49,7 @@ func (s *Manager) initUsers() (err error) {
 	if s.mapping != nil {
 		return
 	}
-
+	
 	users, err := s.getUserIds()
 	if err != nil {
 		return
@@ -58,26 +58,26 @@ func (s *Manager) initUsers() (err error) {
 	for _, v := range users {
 		s.mapping[v.UserID] = v
 	}
-
+	
 	return
 }
 
 func (s *Manager) Users() (users []*dingtalk.DepartmentUser, err error) {
-
+	
 	s.lock.Lock()
 	defer func() {
 		s.lock.Unlock()
 	}()
-
+	
 	err = s.initUsers()
 	if err != nil {
 		return
 	}
-
+	
 	for _, v := range s.mapping {
 		users = append(users, v)
 	}
-
+	
 	return
 }
 
@@ -125,15 +125,15 @@ func (s *Manager) getUserIds() (users []*dingtalk.DepartmentUser, err error) {
 		}
 		dUsers = append(dUsers, r.List...)
 	}
-
+	
 	check := map[string]bool{}
-
+	
 	for _, v := range dUsers {
 		if _, ok := check[v.UserID]; !ok {
 			users = append(users, v)
 			check[v.UserID] = true
 		}
 	}
-
+	
 	return
 }
